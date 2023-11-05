@@ -16,12 +16,14 @@
 // Delete login by name
   // Ask for name
 const createNewLogin = require("./crud/create/createNewLogin")
+const fs = require("fs")
 
 const {askQuestion, askForFile, askPassword, askOptions} = require("./utils/question")
 
 async function test(){
   // Ask for input file
   const inputFile = await askForFile("Enter you input file: ")
+  const logins = JSON.parse(fs.readFileSync(inputFile))
   // Ask for password
   const password = await askPassword("Enter password: ")
   // Ask what the user wants to do
@@ -33,7 +35,7 @@ async function test(){
     "Delete login by name"
   ]
   const option = await askOptions("What would you like to do: ", options)
-  await createNewLogin(inputFile, password)
+  await createNewLogin(logins, password)
   /*
   switch(option){
     case options[0]:
