@@ -1,11 +1,31 @@
-const { askQuestion, askYesOrNo, askCheckbox, askPassword } = require("../../utils/question")
-const sha256 = require("../../utils/sha256")
-const generateRandomPassword = require("../../utils/generateRandomPassword")
+const crypto = require("crypto")
+const { askQuestion, askCheckbox } = require("./question")
 
-async function getRandomPassword(){
+function generateRandomPassword(length, hasUpperCaseCharacters, hasNumbers, hasSpecialCharacters, hasSpaces){
+  const lowerCaseCharacters = "abcdefghijklmnopqrstuvwxyz"
+  const upperCaseCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+  const numbers = "0123456789"
+  const specialCharacters = "!@#$%^&*()_+-={}[]|\\:;\"'<>,.?/"
+
+  let usableCharacters = lowerCaseCharacters
+    if(hasUpperCaseCharacters) usableCharacters += upperCaseCharacters
+    if(hasNumbers) usableCharacters += numbers
+    if(hasSpecialCharacters) usableCharacters += specialCharacters
+    if(hasSpaces) usableCharacters += " "
+
+  let password = ""
+  for(let i = 0; i < length; i++){
+    const randomIndex = crypto.randomInt(usableCharacters.length)
+    password += usableCharacters[randomIndex]
+  }
+
+  return password
+}
+
+async function askAndGenerateRandomPassword(){
   // Asks questions and generate random password
     // Get the length of the generated password
-    let randomPasswordLength = 64
+    let randomPasswordLength
     let passwordLengthCorrect = false
     while(!passwordLengthCorrect){ // Run if the password length isn't correct
       randomPasswordLength = parseInt(await askQuestion("Login's password's length: (max 64)"))
@@ -37,40 +57,4 @@ async function getRandomPassword(){
     return generateRandomPassword(randomPasswordLength, wantsUpperCaseCharacters, wantsNumbers, wantsSpecialCharacters, wantsSpaces)
 }
 
-function generateEncryptedLogin(uuid, loginName, loginUsername, loginPassword){
-  let encryptedLogin = {uuid}
-
-  // Encrypt name
-  const sha256Name = sha256(loginName + uuid + "name")
-}
-
-async function createNewLogin(logins, password){
-  // Ask for login's name
-  const loginName = await askQuestion("Login's name: ")
-  // Ask for login's username
-  const loginUsername = await askQuestion("Login's username: ")
-
-  let loginPassword
-
-  // Ask if the user wants a generated password
-  const wantsPassword = await askYesOrNo("Generate random password: ")
-  if(wantsPassword){
-    loginPassword = await getRandomPassword()
-  }else{
-    // Ask the user for their password
-    let passwordConfirmed = false
-    while(!passwordConfirmed){ // Ask for password if the password isn't confirmed
-      loginPassword = await askPassword("Login's password: ")
-      const reEnteredLoginPassword = await askPassword("Please re-enter your password: ")
-      if(loginPassword === reEnteredLoginPassword){
-        passwordConfirmed = true
-      }else{
-        console.log("Passwords do not match. Please try again.")
-      }
-    }
-  }
-
-  console.log(loginName, loginUsername, loginPassword)
-}
-
-module.exports = createNewLogin
+module.exports = askAndGenerateRandomPassword

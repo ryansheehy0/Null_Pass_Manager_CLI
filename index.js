@@ -1,24 +1,7 @@
-// Ask for input file location
-// Get all logins
-  // Ask for password
-// Get login by name
-  // Ask for password
-  // List all of the names that can be used
-// Create new login
-  // Ask for name
-  // Ask for username
-  // Generate random password: yes/no
-    // if no then Ask for password
-// Update password by name
-  // Ask for name
-  // Generate random password: yes/no
-    // if no then Ask for password
-// Delete login by name
-  // Ask for name
-const createNewLogin = require("./crud/create/createNewLogin")
+const createNewLogin = require("./crud/createNewLogin")
 const fs = require("fs")
 
-const {askQuestion, askForFile, askPassword, askOptions} = require("./utils/question")
+const {askQuestion, askForFile, askPassword, askOptions, askYesOrNo} = require("./utils/question")
 
 async function test(){
   // Ask for input file
