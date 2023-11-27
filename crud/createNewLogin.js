@@ -1,4 +1,6 @@
+const askAndGenerateRandomPassword = require("../utils/askAndGenerateRandomPassword")
 const { askQuestion, askYesOrNo, askPassword } = require("../utils/question")
+const encryptLogin = require("../utils/encryptAndDecrypt/encryptLogin")
 const getUUID = require("../utils/getUUID")
 
 async function createNewLogin(logins, password){
@@ -11,7 +13,7 @@ async function createNewLogin(logins, password){
   // Ask if the user wants a generated password
   const wantsPassword = await askYesOrNo("Generate random password: ")
   if(wantsPassword){
-    loginPassword = await getRandomPassword()
+    loginPassword = await askAndGenerateRandomPassword()
   }else{
     // Ask the user for their password
     let passwordConfirmed = false
@@ -26,9 +28,10 @@ async function createNewLogin(logins, password){
     }
   }
 
-  console.log(loginName, loginUsername, loginPassword)
+  const uuid = getUUID(logins)
+  const encryptedLogin = encryptLogin(password, {uuid, loginName, loginUsername, loginPassword})
 
-  console.log(generateEncryptedLogin())
+  console.log(encryptedLogin)
 }
 
 module.exports = createNewLogin

@@ -30,7 +30,7 @@ async function askAndGenerateRandomPassword(){
     while(!passwordLengthCorrect){ // Run if the password length isn't correct
       randomPasswordLength = parseInt(await askQuestion("Login's password's length: (max 64)"))
       if(!isNaN(randomPasswordLength)){ // If the input is a number
-        if(randomPasswordLength < 64 && randomPasswordLength > 1){ // If the input is between 1 and 64
+        if(randomPasswordLength <= 64 && randomPasswordLength >= 1){ // If the input is between 1 and 64 inclusive
           passwordLengthCorrect = true
         }else{
           console.log("The length must be a number between 1 and 64. Please try again.")

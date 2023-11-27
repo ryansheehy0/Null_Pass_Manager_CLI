@@ -13,7 +13,6 @@ function simpleEncryption(input1, input2, isEncryption){
   const input2Array = input2.split("")
   let outputArray = []
 
-
   for(let i = 0; i < input1Array.length; i++){
     let input1Code = ascii(input1Array[i]) - 32
     let input2Code = ascii(input2Array[i]) - 32
