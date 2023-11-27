@@ -4,7 +4,7 @@ A terminal password manager that uses a relatively simple encryption algorithm a
 ## Inputs
 - Encrypted json file or create a new encrypted json file from a file path
   - If you are creating a new encrypted file it will then ask for a file name
-- Password
+- Input password
 
 ## Commands
 - Get all logins
@@ -14,12 +14,12 @@ A terminal password manager that uses a relatively simple encryption algorithm a
 - Delete login by name
 - Generate random password
 
-## Encryption algorithm
+## Login and json file structure
 Each login is an object with 4 fields
 ```javascript
 {
-  uuid: /*Universally Unique Identifier. Uniquely identifies the login.*/,
-  name: /*Name of the website or account*/,
+  uuid:, // Universally Unique Identifier. Uniquely identifies the login
+  name:, // Name of the website or account
   username:,
   password:
 }
@@ -27,33 +27,33 @@ Each login is an object with 4 fields
 
 Logins are stored in an array inside the json file
 
-1. Split the input password in half. `password1stHalf` and `password2ndHalf`
-1. Encryption for each login
+## Encryption algorithm
 
-For each login
+1. Split the input password in half. `password1stHalf` and `password2ndHalf`
+1. For each login
 
 ```javascript
-// Encrypt the name
+// name
 const hashedName = hexSHA256(name + uuid + password1stHalf)
 const encryptedName = simpleEncryption(name, hashedName, "encrypt")
   // or
 const decryptedName = simpleEncryption(name, hashedName, "decrypt")
 
-// Encrypt the username
+// username
 const hashedUsername = hexSHA256(username + uuid + password1stHalf)
 const encryptedUsername = simpleEncryption(username, hashedUsername, "encrypt")
   // or
 const decryptedUsername = simpleEncryption(username, hashedUsername, "decrypt")
 
-// Encrypt the password
+// password
 const hashedPassword = hexSHA256(password + uuid + password2ndHalf)
-const encryptedUsername = simpleEncryption(username, hashedUsername, "encrypt")
+const encryptedPassword = simpleEncryption(password, hashedPassword, "encrypt")
   // or
-const decryptedUsername = simpleEncryption(username, hashedUsername, "decrypt")
+const decryptedPassword = simpleEncryption(password, hashedPassword, "decrypt")
 ```
 
 ## Simple Encryption
-Simple encryption is a symmetric stream encryption that keeps the output in the visible ascii range.
+Simple encryption is a symmetric stream encryption which takes in inputs in the visible ascii range and keeps the output in the visible ascii range.
 
 `function simpleEncryption(input, password, encryptionOrDecryption)`
 
@@ -72,6 +72,8 @@ Simple encryption is a symmetric stream encryption that keeps the output in the 
   - Convert result to a character using ascii
   - Push character to output array
 - Return and convert output array to an output string
+
+### Javascript example
 
 ```javascript
 function simpleEncryption(input, password, encryptOrDecrypt){
@@ -147,7 +149,13 @@ function simpleEncryption(input, password, encryptOrDecrypt){
 | 52 + 32 = 84        | 72 + 32 = 104       | 73 + 32 = 105       | 83 + 32 = 115       |
 | T                   | h                   | i                   | s                   |
 
-## Why split password in half
-All passwords need to be random. Put the brute force attack on the websites themselves.
+## Why split the input password in half
+The reason the input password is split in half is to shift brute force attacks onto the websites instead of onto the encrypted file. It does this by encrypting the names and usernames separately from the passwords.
 
+The first half of the password encrypts the name and username, which are assumed to be plain text. When decrypted they can be easily verified because they are typically recognizable names or words.
 
+The second half of the password encrypts the password, which is assumed to be completely random. When decrypted it cannot be easily verified because they are random. They have to be verified by logging into the website itself.
+
+If the name, username, and passwords were all encrypted with the same password then an attacker could infer a password is correct by verifying that the names and usernames are logical. They can infer the password is correct without verifying it on the website.
+
+By keeping the password as a separate encryption, the information an attacker could obtain from a brute force attack is limited to identifying which websites the user has accounts on. To actually break into the user's account, the attacker would then need to conduct a brute force attack on the specific account itself, rather than the encrypted file.
