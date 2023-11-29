@@ -1,9 +1,9 @@
 const crypto = require("crypto")
 
-function sha256(input){
+function hexSHA256(input){
   const hash = crypto.createHash("sha256")
   hash.update(input)
   return hash.digest("hex")
 }
 
-module.exports = sha256
+module.exports = hexSHA256

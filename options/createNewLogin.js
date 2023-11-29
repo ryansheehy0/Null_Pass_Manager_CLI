@@ -1,9 +1,12 @@
-const askAndGenerateRandomPassword = require("../utils/askAndGenerateRandomPassword")
+const generateRandomPassword = require("./generateRandomPassword")
 const { askQuestion, askYesOrNo, askPassword } = require("../utils/question")
-const encryptLogin = require("../utils/encryptAndDecrypt/encryptLogin")
 const getUUID = require("../utils/getUUID")
+const {encryptLogin} = require("../utils/encryptAndDecrypt/encryptOrDecryptLogin")
+const fs = require("fs")
 
-async function createNewLogin(logins, password){
+async function createNewLogin(inputFilePath, inputPassword){
+  // Get the object input file
+  const inputFile = JSON.parse(fs.readFileSync(inputFilePath))
   // Ask for login's name
   const loginName = await askQuestion("Login's name: ")
   // Ask for login's username
@@ -13,7 +16,7 @@ async function createNewLogin(logins, password){
   // Ask if the user wants a generated password
   const wantsPassword = await askYesOrNo("Generate random password: ")
   if(wantsPassword){
-    loginPassword = await askAndGenerateRandomPassword()
+    loginPassword = await generateRandomPassword()
   }else{
     // Ask the user for their password
     let passwordConfirmed = false
@@ -28,8 +31,15 @@ async function createNewLogin(logins, password){
     }
   }
 
-  const uuid = getUUID(logins)
-  const encryptedLogin = encryptLogin(password, {uuid, loginName, loginUsername, loginPassword})
+  // Get a new uuid
+  const uuid = getUUID(inputFile)
+
+  // Create an encryptedLogin
+  const encryptedLogin = encryptLogin({uuid, name: loginName, username: loginUsername, password: loginPassword}, inputPassword)
+
+  // Concat the new encrypted login to the end of the inputFile
+  inputFile.push(encryptLogin)
+  fs.writeFileSync(inputFilePath, inputFile)
 
   console.log(encryptedLogin)
 }

@@ -2,8 +2,7 @@
 A terminal password manager that uses a relatively simple encryption algorithm and stores it in a json file.
 
 ## Inputs
-- Encrypted json file or create a new encrypted json file from a file path
-  - If you are creating a new encrypted file it will then ask for a file name
+- Encrypted json file
 - Input password
 
 ## Commands
