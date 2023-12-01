@@ -1,7 +1,7 @@
 const fs = require("fs")
 
 const {askQuestion, askForFile, askPassword, askOptions} = require("./utils/question")
-const {generateRandomPassword} = require("./options/index")
+const {generateRandomPassword, createNewLogin} = require("./options/index")
 
 async function asyncFunc(){
   // Ask for input file

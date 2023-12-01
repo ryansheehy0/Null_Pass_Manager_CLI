@@ -3,13 +3,13 @@ A terminal password manager that uses a relatively simple encryption algorithm a
 
 ## Inputs
 - Encrypted json file
-- Input password
+- Input password which must be 128 random characters
 
 ## Commands
 - Get all logins
 - Get login by name
 - Create new login
-- Update password by name
+- Update login by name
 - Delete login by name
 - Generate random password
 
@@ -28,28 +28,33 @@ Logins are stored in an array inside the json file
 
 ## Encryption algorithm
 
-1. Split the input password in half. `password1stHalf` and `password2ndHalf`
+1. Split the input password in half. Each getting 64 characters. `password1stHalf` and `password2ndHalf`
 1. For each login
 
 ```javascript
 // name
-const hashedName = hexSHA256(name + uuid + password1stHalf)
-const encryptedName = simpleEncryption(name, hashedName, "encrypt")
+const nameHash = hexSHA256(uuid + "name" + password1stHalf)
+const encryptedName = simpleEncryption(name, simpleEncryption(password1stHalf, nameHash, "encrypt"), "encrypt")
   // or
-const decryptedName = simpleEncryption(name, hashedName, "decrypt")
+const decryptedName = simpleEncryption(name, simpleEncryption(password1stHalf, nameHash, "decrypt"), "decrypt")
 
 // username
-const hashedUsername = hexSHA256(username + uuid + password1stHalf)
-const encryptedUsername = simpleEncryption(username, hashedUsername, "encrypt")
+const usernameHash = hexSHA256(uuid + "username" + password1stHalf)
+const encryptedUsername = simpleEncryption(username, simpleEncryption(password1stHalf, usernameHash, "encrypt"), "encrypt")
   // or
-const decryptedUsername = simpleEncryption(username, hashedUsername, "decrypt")
+const decryptedUsername = simpleEncryption(username, simpleEncryption(password1stHalf, usernameHash, "decrypt"), "decrypt")
 
 // password
-const hashedPassword = hexSHA256(password + uuid + password2ndHalf)
-const encryptedPassword = simpleEncryption(password, hashedPassword, "encrypt")
+const passwordHash = hexSHA256(uuid + "password" + password2ndHalf)
+const encryptedPassword = simpleEncryption(password, simpleEncryption(password2ndHalf, passwordHash, "encrypt"), "encrypt")
   // or
-const decryptedPassword = simpleEncryption(password, hashedPassword, "decrypt")
+const decryptedPassword = simpleEncryption(password, simpleEncryption(password2ndHalf, passwordHash, "decrypt"), "decrypt")
 ```
+
+Why the inputs into the hash
+- The `uuid` is to ensure the hash is different for each login
+- The `"name"`, `"username"`, or `"password"` is to ensure the hash is different for each field incase the values of the fields are the same.
+- The `password1stHalf` or `password2ndHalf` is to ensure an attacker cannot guess the hash.
 
 ## Simple Encryption
 Simple encryption is a symmetric stream encryption which takes in inputs in the visible ascii range and keeps the output in the visible ascii range.

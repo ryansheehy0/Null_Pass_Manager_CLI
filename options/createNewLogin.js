@@ -38,8 +38,8 @@ async function createNewLogin(inputFilePath, inputPassword){
   const encryptedLogin = encryptLogin({uuid, name: loginName, username: loginUsername, password: loginPassword}, inputPassword)
 
   // Concat the new encrypted login to the end of the inputFile
-  inputFile.push(encryptLogin)
-  fs.writeFileSync(inputFilePath, inputFile)
+  inputFile.push(encryptedLogin)
+  fs.writeFileSync(inputFilePath, JSON.stringify(inputFile, null, 2))
 
   console.log(encryptedLogin)
 }
