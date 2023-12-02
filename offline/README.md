@@ -9,6 +9,12 @@ Make sure to only have your
 
 ## .cse files
 
+```javascript
+{
+  cse: "128characterMasterPassword"
+}
+```
+
 
 ## Problem
 - When a character isn't hex you know that it has to have been changed. You can guess the length of the input.

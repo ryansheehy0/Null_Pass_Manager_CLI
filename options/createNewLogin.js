@@ -8,22 +8,21 @@ async function createNewLogin(inputFilePath, inputPassword){
   // Get the object input file
   const inputFile = JSON.parse(fs.readFileSync(inputFilePath))
   // Ask for login's name
-  const loginName = await askQuestion("Login's name: ")
+  const name = await askQuestion("Login's name: ")
   // Ask for login's username
-  const loginUsername = await askQuestion("Login's username: ")
-
-  let loginPassword
+  const username = await askQuestion("Login's username: ")
   // Ask if the user wants a generated password
+  let password
   const wantsPassword = await askYesOrNo("Generate random password: ")
   if(wantsPassword){
-    loginPassword = await generateRandomPassword()
+    password = await generateRandomPassword()
   }else{
     // Ask the user for their password
     let passwordConfirmed = false
     while(!passwordConfirmed){ // Ask for password if the password isn't confirmed
-      loginPassword = await askPassword("Login's password: ")
-      const reEnteredLoginPassword = await askPassword("Please re-enter your password: ")
-      if(loginPassword === reEnteredLoginPassword){
+      password = await askPassword("Login's password: ")
+      const reEnteredPassword = await askPassword("Please re-enter your password: ")
+      if(password === reEnteredPassword){
         passwordConfirmed = true
       }else{
         console.log("Passwords do not match. Please try again.")
@@ -35,13 +34,11 @@ async function createNewLogin(inputFilePath, inputPassword){
   const uuid = getUUID(inputFile)
 
   // Create an encryptedLogin
-  const encryptedLogin = encryptLogin({uuid, name: loginName, username: loginUsername, password: loginPassword}, inputPassword)
+  const encryptedLogin = encryptLogin({uuid, name, username, password}, inputPassword)
 
   // Concat the new encrypted login to the end of the inputFile
   inputFile.push(encryptedLogin)
   fs.writeFileSync(inputFilePath, JSON.stringify(inputFile, null, 2))
-
-  console.log(encryptedLogin)
 }
 
 module.exports = createNewLogin

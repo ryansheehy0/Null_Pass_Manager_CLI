@@ -1,11 +1,11 @@
 const fs = require("fs")
 
-const {askQuestion, askForFile, askPassword, askOptions} = require("./utils/question")
-const {generateRandomPassword, createNewLogin} = require("./options/index")
+const {askQuestion, askForFile, askPassword, askOptions, askYesOrNo} = require("./utils/question")
+const {generateRandomPassword, createNewLogin, getAllLogins} = require("./options/index")
 
 async function asyncFunc(){
   // Ask for input file
-  let inputFilePath = await askForFile("Enter input file or give a folder location to create a new one: ")
+  let inputFilePath = await askForFile("Enter encrypted input file or give a folder location to create a new one: ")
   const inputFileStats = fs.lstatSync(inputFilePath)
   if(inputFileStats.isFile()){
     try{
@@ -23,8 +23,19 @@ async function asyncFunc(){
   }else{
     throw new Error("You must enter an encrypted json file or give a folder location. Please try again.")
   }
-  // Ask for input password
-  const inputPassword = await askPassword("Enter password: ")
+
+  // Ask if they would like to generate a new random master password
+  let inputPassword
+  const wantsPassword = await askYesOrNo("Generate new master password: ")
+  if(wantsPassword){
+    inputPassword = await generateRandomPassword(128, 128)
+  }else{
+    inputPassword = await askPassword("Enter master password: (128 chars)")
+    while(inputPassword.length !== 128){
+      console.log("Master password must be 128 characters long. Please try again.")
+      inputPassword = await askPassword("Enter master password: (128 chars)")
+    }
+  }
   // Ask what the user wants to do
   const options = [
     "Get all logins",
@@ -42,7 +53,7 @@ async function asyncFunc(){
     console.log(option)
     switch(option){
       case "Get all logins":
-        // await getAllLogins(inputFilePath, inputPassword)
+        await getAllLogins(inputFilePath, inputPassword)
         break
       case "Get login by name":
         // await getLoginByName(inputFilePath, inputPassword)

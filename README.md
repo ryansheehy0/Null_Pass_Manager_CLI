@@ -3,7 +3,7 @@ A terminal password manager that uses a relatively simple encryption algorithm a
 
 ## Inputs
 - Encrypted json file
-- Input password which must be 128 random characters
+- Input master password which must be 128 random characters
 
 ## Commands
 - Get all logins
@@ -55,6 +55,16 @@ Why the inputs into the hash
 - The `uuid` is to ensure the hash is different for each login
 - The `"name"`, `"username"`, or `"password"` is to ensure the hash is different for each field incase the values of the fields are the same.
 - The `password1stHalf` or `password2ndHalf` is to ensure an attacker cannot guess the hash.
+
+### Visual example for each field
+
+```
+hexSHA256(uuid + fieldName + passwordHalf) -> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                              ~~~~~~~~~~~~~passwordHalf~~~~~~~~~~~~~~~
+                             simpleEncryption                                    value
+                                              ________________________________________
+                                              ~~~~~~~~~~~~Encrypted Value~~~~~~~~~~~~~
+```
 
 ## Simple Encryption
 Simple encryption is a symmetric stream encryption which takes in inputs in the visible ascii range and keeps the output in the visible ascii range.
