@@ -17,40 +17,40 @@ function encryptLogin({uuid, name, username, password}, inputPassword){
   const {string1stHalf: password1stHalf, string2ndHalf: password2ndHalf} = splitStringInHalf(inputPassword)
   // encrypt name
   const nameHash = hexSHA256(uuid + "name" + password1stHalf)
-  const encryptedName = simpleEncryption(name, simpleEncryption(password1stHalf, nameHash, "encrypt"), "encrypt")
+  const encryptedName = simpleEncryption(simpleEncryption(name, nameHash, "encrypt"), password1stHalf, "encrypt")
   // encrypt username
   const usernameHash = hexSHA256(uuid + "username" + password1stHalf)
-  const encryptedUsername = simpleEncryption(username, simpleEncryption(password1stHalf, usernameHash, "encrypt"), "encrypt")
+  const encryptedUsername = simpleEncryption(simpleEncryption(username, usernameHash, "encrypt"), password1stHalf, "encrypt")
   // encrypt password
   const passwordHash = hexSHA256(uuid + "password" + password2ndHalf)
-  const encryptedPassword = simpleEncryption(password, simpleEncryption(password2ndHalf, passwordHash, "encrypt"), "encrypt")
+  const encryptedPassword = simpleEncryption(simpleEncryption(password, passwordHash, "encrypt"), password2ndHalf, "encrypt")
   // Return encrypted login
   return {
     uuid,
-    name: encryptedName,
-    username: encryptedUsername,
-    password: encryptedPassword
+    encryptedName,
+    encryptedUsername,
+    encryptedPassword
   }
 }
 
-function decryptLogin({uuid, name, username, password}, inputPassword){
+function decryptLogin({uuid, encryptedName, encryptedUsername, encryptedPassword}, inputPassword){
   // Split input password in half
   const {string1stHalf: password1stHalf, string2ndHalf: password2ndHalf} = splitStringInHalf(inputPassword)
   // decrypt name
   const nameHash = hexSHA256(uuid + "name" + password1stHalf)
-  const decryptedName = simpleEncryption(name, simpleEncryption(password1stHalf, nameHash, "encrypt"), "decrypt")
+  const name = simpleEncryption(simpleEncryption(encryptedName, password1stHalf, "decrypt"), nameHash, "decrypt")
   // decrypt username
   const usernameHash = hexSHA256(uuid + "username" + password1stHalf)
-  const decryptedUsername = simpleEncryption(username, simpleEncryption(password1stHalf, usernameHash, "encrypt"), "decrypt")
+  const username = simpleEncryption(simpleEncryption(encryptedUsername, password1stHalf, "decrypt"), usernameHash, "decrypt")
   // decrypt password
   const passwordHash = hexSHA256(uuid + "password" + password2ndHalf)
-  const decryptedPassword = simpleEncryption(password, simpleEncryption(password2ndHalf, passwordHash, "encrypt"), "decrypt")
+  const password = simpleEncryption(simpleEncryption(encryptedPassword, password2ndHalf, "decrypt"), passwordHash, "decrypt")
   // Return encrypted login
   return {
     uuid,
-    name: decryptedName,
-    username: decryptedUsername,
-    password: decryptedPassword
+    name,
+    username,
+    password
   }
 }
 

@@ -1,8 +1,9 @@
+const fs = require("fs")
+
 const generateRandomPassword = require("./generateRandomPassword")
 const { askQuestion, askYesOrNo, askPassword } = require("../utils/question")
 const getUUID = require("../utils/getUUID")
 const {encryptLogin} = require("../utils/encryptAndDecrypt/encryptOrDecryptLogin")
-const fs = require("fs")
 
 async function createNewLogin(inputFilePath, inputPassword){
   // Get the object input file

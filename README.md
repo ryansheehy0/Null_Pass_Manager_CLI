@@ -18,9 +18,9 @@ Each login is an object with 4 fields
 ```javascript
 {
   uuid:, // Universally Unique Identifier. Uniquely identifies the login
-  name:, // Name of the website or account
-  username:,
-  password:
+  encryptedName:, // Name of the website or account
+  encryptedUsername:,
+  encryptedPassword:
 }
 ```
 
@@ -34,21 +34,21 @@ Logins are stored in an array inside the json file
 ```javascript
 // name
 const nameHash = hexSHA256(uuid + "name" + password1stHalf)
-const encryptedName = simpleEncryption(name, simpleEncryption(password1stHalf, nameHash, "encrypt"), "encrypt")
+const encryptedName = simpleEncryption(simpleEncryption(name, nameHash, "encrypt"), password1stHalf, "encrypt")
   // or
-const decryptedName = simpleEncryption(name, simpleEncryption(password1stHalf, nameHash, "decrypt"), "decrypt")
+const name = simpleEncryption(simpleEncryption(encryptedName, password1stHalf, "decrypt"), nameHash, "decrypt")
 
 // username
 const usernameHash = hexSHA256(uuid + "username" + password1stHalf)
-const encryptedUsername = simpleEncryption(username, simpleEncryption(password1stHalf, usernameHash, "encrypt"), "encrypt")
+const encryptedUsername = simpleEncryption(simpleEncryption(username, usernameHash, "encrypt"), password1stHalf, "encrypt")
   // or
-const decryptedUsername = simpleEncryption(username, simpleEncryption(password1stHalf, usernameHash, "decrypt"), "decrypt")
+const username = simpleEncryption(simpleEncryption(encryptedUsername, password1stHalf, "decrypt"), usernameHash, "decrypt")
 
 // password
 const passwordHash = hexSHA256(uuid + "password" + password2ndHalf)
-const encryptedPassword = simpleEncryption(password, simpleEncryption(password2ndHalf, passwordHash, "encrypt"), "encrypt")
+const encryptedPassword = simpleEncryption(simpleEncryption(password, passwordHash, "encrypt"), password2ndHalf, "encrypt")
   // or
-const decryptedPassword = simpleEncryption(password, simpleEncryption(password2ndHalf, passwordHash, "decrypt"), "decrypt")
+const password = simpleEncryption(simpleEncryption(encryptedPassword, password2ndHalf, "decrypt"), passwordHash, "decrypt")
 ```
 
 Why the inputs into the hash
@@ -58,12 +58,26 @@ Why the inputs into the hash
 
 ### Visual example for each field
 
+Encryption
 ```
-hexSHA256(uuid + fieldName + passwordHalf) -> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                                                                                 value
+hexSHA256(uuid + fieldName + passwordHalf) -> ~~~~~~~~~~~~~~~~~~hash~~~~~~~~~~~~~~~~~~
+                    simpleEncryption(encrypt) ________________________________________
+                                              ~~~~~~~~~~~~~~first layer~~~~~~~~~~~~~~~
                                               ~~~~~~~~~~~~~passwordHalf~~~~~~~~~~~~~~~
-                             simpleEncryption                                    value
-                                              ________________________________________
+                    simpleEncryption(encrypt) ________________________________________
                                               ~~~~~~~~~~~~Encrypted Value~~~~~~~~~~~~~
+```
+
+Decryption
+```
+                                              ~~~~~~~~~~~~Encrypted Value~~~~~~~~~~~~~
+                                              ~~~~~~~~~~~~~passwordHalf~~~~~~~~~~~~~~~
+                    simpleEncryption(decrypt) ________________________________________
+                                              ~~~~~~~~~~~~~~first layer~~~~~~~~~~~~~~~
+hexSHA256(uuid + fieldName + passwordHalf) -> ~~~~~~~~~~~~~~~~~~hash~~~~~~~~~~~~~~~~~~
+                    simpleEncryption(decrypt) ________________________________________
+                                                                                 value
 ```
 
 ## Simple Encryption
@@ -173,3 +187,7 @@ The second half of the password encrypts the password, which is assumed to be co
 If the name, username, and passwords were all encrypted with the same password then an attacker could infer a password is correct by verifying that the names and usernames are logical. They can infer the password is correct without verifying it on the website.
 
 By keeping the password as a separate encryption, the information an attacker could obtain from a brute force attack is limited to identifying which websites the user has accounts on. To actually break into the user's account, the attacker would then need to conduct a brute force attack on the specific account itself, rather than the encrypted file.
+
+## Problems
+- \s aren't being handled correctly.
+  - output is \\ instead of just \
