@@ -1,7 +1,7 @@
 const fs = require("fs")
 
 const {askQuestion, askForFile, askPassword, askOptions, askYesOrNo} = require("./utils/question")
-const {generateRandomPassword, createNewLogin, getAllLogins, getLoginByName, updateLoginByName} = require("./options/index")
+const {generateRandomPassword, createNewLogin, getAllLogins, getLoginByName, updateLoginByName, deleteLoginByName} = require("./options/index")
 
 async function asyncFunc(){
   // Ask for input file
@@ -69,7 +69,7 @@ async function asyncFunc(){
         await updateLoginByName(inputFilePath, inputPassword)
         break
       case "Delete login by name":
-        // await deleteLoginByName(inputFilePath, inputPassword)
+        await deleteLoginByName(inputFilePath, inputPassword)
         break
       case "Generate random password":
         await generateRandomPassword()

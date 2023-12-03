@@ -1,24 +1,15 @@
-const fs = require("fs")
+const forEachLogin = require("../utils/functions/forEachLogin")
 
-const {decryptLogin} = require("../utils/encryptAndDecrypt/encryptOrDecryptLogin")
-
-function getAllLogins(inputFilePath, inputPassword, justNames){
-  // Get the object input file
-  const inputFile = JSON.parse(fs.readFileSync(inputFilePath))
-  // Go through each of the logins
+async function getAllLogins(inputFilePath, inputPassword, justNames){
   let outputFile = []
-  for(let i = 0; i < inputFile.length; i++){
-    const encryptedLogin = inputFile[i]
-    // Decrypt each login
-    const login = decryptLogin(encryptedLogin, inputPassword)
-    // Add to output file
+  await forEachLogin(inputFilePath, inputPassword, (login) => {
     if(justNames){
       outputFile.push(login.name)
     }else{
       outputFile.push(login)
     }
-  }
-  // Print outputFile
+  })
+
   console.log()
   console.log(outputFile)
   console.log()

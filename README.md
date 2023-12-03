@@ -191,3 +191,5 @@ By keeping the password as a separate encryption, the information an attacker co
 ## Problems
 - \s aren't being handled correctly.
   - output is \\ instead of just \
+- instead of login.name.includes(loginName) it should be login.name.trim() === loginName
+  - Don't have more than 1 login being changed accidentally

@@ -1,20 +1,13 @@
 const fs = require("fs")
 
-const {askQuestion, askCheckbox, askPassword} = require("../utils/question")
-const {decryptLogin, encryptLogin} = require("../utils/encryptAndDecrypt/encryptOrDecryptLogin")
+const {askQuestion, askCheckbox} = require("../utils/question")
+const {encryptLogin} = require("../utils/encryptAndDecrypt/encryptOrDecryptLogin")
 const askForNewPassword = require("../utils/functions/askForNewPassword")
 
+const loginByName = require("../utils/functions/loginByName")
+
 async function updateLoginByName(inputFilePath, inputPassword){
-  // Get the object input file
-  const inputFile = JSON.parse(fs.readFileSync(inputFilePath))
-  // Ask for login name
-  const loginName = await askQuestion("Login's name: ")
-  // Go through each of the logins
-  for(let i = 0; i < inputFile.length; i++){
-    const encryptedLogin = inputFile[i]
-    let login = decryptLogin(encryptedLogin, inputPassword)
-    // If the login is the correct one
-    if(login.name.includes(loginName)){
+  await loginByName(inputFilePath, inputPassword, async (login) => {
       console.log()
       console.log(login)
       console.log()
@@ -41,13 +34,7 @@ async function updateLoginByName(inputFilePath, inputPassword){
       inputFile[i] = newEncryptedLogin
       // Write inputFile to file
       fs.writeFileSync(inputFilePath, JSON.stringify(inputFile, null, 2))
-      return
-    }
-  }
-
-  console.log()
-  console.log("There was no login with that name. Please try again.")
-  console.log()
+  })
 }
 
 module.exports = updateLoginByName
