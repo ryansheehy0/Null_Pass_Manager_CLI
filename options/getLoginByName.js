@@ -17,9 +17,13 @@ async function getLoginByName(inputFilePath, inputPassword){
       console.log()
       console.log(login)
       console.log()
-      break
+      return
     }
   }
+
+  console.log()
+  console.log("There was no login with that name. Please try again.")
+  console.log()
 }
 
 module.exports = getLoginByName
