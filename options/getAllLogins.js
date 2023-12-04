@@ -1,4 +1,5 @@
 const forEachLogin = require("../utils/functions/forEachLogin")
+const printObj = require("../utils/functions/printObj")
 
 async function getAllLogins(inputFilePath, inputPassword, justNames){
   let outputFile = []
@@ -10,9 +11,7 @@ async function getAllLogins(inputFilePath, inputPassword, justNames){
     }
   })
 
-  console.log()
-  console.log(outputFile)
-  console.log()
+  printObj(outputFile)
 }
 
 module.exports = getAllLogins

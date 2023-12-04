@@ -192,3 +192,6 @@ By keeping the password as a separate encryption, the information an attacker co
 ## Problems
 - \s aren't being handled correctly.
   - output is \\ instead of just \
+- Handling logins with the same names
+- Organize and clean code
+- Replace requires with imports
