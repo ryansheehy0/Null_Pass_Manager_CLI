@@ -7,7 +7,7 @@ const askForNewPassword = require("../utils/functions/askForNewPassword")
 const loginByName = require("../utils/functions/loginByName")
 
 async function updateLoginByName(inputFilePath, inputPassword){
-  await loginByName(inputFilePath, inputPassword, async (login) => {
+  await loginByName(inputFilePath, inputPassword, async (login, inputFile, i) => {
       console.log()
       console.log(login)
       console.log()
@@ -15,12 +15,28 @@ async function updateLoginByName(inputFilePath, inputPassword){
       const changes = await askCheckbox("What would you like to update: ", ["name", "username", "password"])
       // If the name wants to be updated
       if(changes.includes("name")){
-        const newName = await askQuestion("Login's new name: ")
+        let newName
+        while(true){
+          newName = await askQuestion("Login's new name: (max 64)")
+          if(newName.length > 64){
+            console.log("The max length the login's name can be is 64 characters. Please try again.")
+            continue
+          }
+          break
+        }
         login.name = newName
       }
       // If the username wants to be updated
       if(changes.includes("username")){
-        const newUsername = await askQuestion("Login's new username: ")
+        let newUsername
+        while(true){
+          newUsername = await askQuestion("Login's new username: (max 64)")
+          if(newUsername.length > 64){
+            console.log("The max length the login's username can be is 64 characters. Please try again.")
+            continue
+          }
+          break
+        }
         login.username = newUsername
       }
       // If the password wants to be updated

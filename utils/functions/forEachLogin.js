@@ -9,7 +9,7 @@ async function forEachLogin(inputFilePath, inputPassword, loginFunction){
   for(let i = 0; i < inputFile.length; i++){
     const encryptedLogin = inputFile[i]
     const login = decryptLogin(encryptedLogin, inputPassword)
-    await loginFunction({...login}, {...inputFile}, i)
+    await loginFunction({...login}, [...inputFile], i)
   }
 }
 

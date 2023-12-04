@@ -72,7 +72,17 @@ async function asyncFunc(){
         await deleteLoginByName(inputFilePath, inputPassword)
         break
       case "Generate random password":
-        await generateRandomPassword()
+        // Ask for length
+        let length
+        while(true){
+          length = parseInt(await askQuestion("Password length: "))
+          if(!Number.isInteger(length)){
+            console.log("Length must be an integer. Please try again.")
+            continue
+          }
+          break
+        }
+        await generateRandomPassword(length, length)
         break
       case "Exit":
         keepRunning = false

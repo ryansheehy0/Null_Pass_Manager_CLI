@@ -1,3 +1,5 @@
+const fs = require("fs")
+
 const loginByName = require("../utils/functions/loginByName")
 
 async function deleteLoginByName(inputFilePath, inputPassword){

@@ -6,12 +6,13 @@ A terminal password manager that uses a relatively simple encryption algorithm a
 - Input master password which must be 128 random characters
 
 ## Commands
-+ Get all logins
-+ Get login by name
-+ Create new login
+- Get all logins
+- Get all login names
+- Get login by name
+- Create new login
 - Update login by name
 - Delete login by name
-+ Generate random password
+- Generate random password
 
 ## Login and json file structure
 Each login is an object with 4 fields
@@ -191,5 +192,3 @@ By keeping the password as a separate encryption, the information an attacker co
 ## Problems
 - \s aren't being handled correctly.
   - output is \\ instead of just \
-- instead of login.name.includes(loginName) it should be login.name.trim() === loginName
-  - Don't have more than 1 login being changed accidentally

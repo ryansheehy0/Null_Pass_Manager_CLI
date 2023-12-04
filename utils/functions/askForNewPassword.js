@@ -7,16 +7,18 @@ async function askForNewPassword(){
   if(wantsPassword){
     password = await generateRandomPassword()
   }else{
-    // Ask the user for their password
-    let passwordConfirmed = false
-    while(!passwordConfirmed){ // Ask for password if the password isn't confirmed
-      password = await askPassword("Login's password: ")
-      const reEnteredPassword = await askPassword("Please re-enter your password: ")
-      if(password === reEnteredPassword){
-        passwordConfirmed = true
-      }else{
-        console.log("Passwords do not match. Please try again.")
+    while(true){
+      password = await askPassword("Login's password: (max 64)")
+      if(password.length > 64){
+        console.log("The max length the login's password can be is 64 characters. Please try again.")
+        continue
       }
+      let reEnteredPassword = await askPassword("Please re-enter your password: ")
+      if(password !== reEnteredPassword){
+        console.log("Passwords do not match. Please try again.")
+        continue
+      }
+      break
     }
   }
   return password
