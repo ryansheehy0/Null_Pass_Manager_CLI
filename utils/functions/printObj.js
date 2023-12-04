@@ -5,6 +5,10 @@ function printObj(logins){
   let coloredJson = printingString.replace(/\d(?!.*")/g, (match, p1) => chalk.yellow(match))
   coloredJson = coloredJson.replace(/(?<=: )"(.*)"/g, (match, p1) => chalk.green(`"${p1}"`))
 
+  let array = coloredJson.split("\n")
+  array = array.slice(2, -2)
+  coloredJson = array.join("\n")
+
   console.log()
   console.log(coloredJson)
   console.log()

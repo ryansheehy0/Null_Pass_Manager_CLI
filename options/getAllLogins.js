@@ -11,7 +11,13 @@ async function getAllLogins(inputFilePath, inputPassword, justNames){
     }
   })
 
-  printObj(outputFile)
+  if(justNames){
+    console.log()
+    console.log(outputFile)
+    console.log()
+  }else{
+    printObj(outputFile)
+  }
 }
 
 module.exports = getAllLogins
