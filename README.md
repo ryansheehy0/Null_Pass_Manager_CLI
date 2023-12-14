@@ -190,6 +190,6 @@ If the name, username, and passwords were all encrypted with the same password t
 By keeping the password as a separate encryption, the information an attacker could obtain from a brute force attack is limited to identifying which websites the user has accounts on. To actually break into the user's account, the attacker would then need to conduct a brute force attack on the specific account itself, rather than the encrypted file.
 
 ## Problems
-- Handling logins with the same names
 - Organize and clean code
 - Replace requires with imports
+- Handling logins with the same names
