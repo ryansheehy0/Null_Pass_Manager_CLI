@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const fs = require("fs")
 const {askForFile, askOptions, askPassword} = require("../utils/question")
 
