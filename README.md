@@ -21,7 +21,8 @@ Each login is an object with 4 fields
   uuid:, // Universally Unique Identifier. Uniquely identifies the login
   encryptedName:, // Name of the website or account
   encryptedUsername:,
-  encryptedPassword:
+  encryptedPassword:,
+  encryptedPasswordLength: // Only 2 characters in length
 }
 ```
 
@@ -189,7 +190,13 @@ If the name, username, and passwords were all encrypted with the same password t
 
 By keeping the password as a separate encryption, the information an attacker could obtain from a brute force attack is limited to identifying which websites the user has accounts on. To actually break into the user's account, the attacker would then need to conduct a brute force attack on the specific account itself, rather than the encrypted file.
 
+## Why the need for a password length field
+Some websites have limits on the size of passwords. If the max password length is less than 64 characters, then when the password is stored in the login it has to be padded in front. If this padding is spaces, then it would be easily identifiable.
+
+Instead if the password length was stored alongside the password, the padding could be random characters which would prevent passwords from being easily identifiable.
+
 ## Problems
-- Organize and clean code
+- Organize code better
+- Typescript
 - Replace requires with imports
 - Handling logins with the same names
