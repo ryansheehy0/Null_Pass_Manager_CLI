@@ -1,47 +1,49 @@
-import { z } from 'zod'
 import fs from 'fs'
 import getLoginByName from "../getLoginByName"
-import { askCheckbox, askQuestion, askPassword } from "../questions"
+import { askCheckbox, askQuestion, askPassword, askYesOrNo } from "../questions"
+import askForNewPassword from "../askForNewPassword"
+import encrypt from '../cryptography/encrypt'
+
+async function getProperty(property: "name" | "username"): Promise<string>{
+  let newProperty: string
+  const question = `Login's new ${property}: (max 64 characters)`
+
+  while(true){
+    newProperty = await askQuestion(question)
+    if(newProperty.length > 64){
+      console.log("The max length is 64 characters. Please try again.")
+      continue
+    }
+    break
+  }
+
+  return newProperty
+}
 
 export default async function updateLoginByName(inputFilePath: string, masterPassword: string){
-  const login = await getLoginByName(inputFilePath, masterPassword)
+  const { login, loginIndex, encryptedLogins } = await getLoginByName(inputFilePath, masterPassword)
   console.log(login)
 
   const updates = await askCheckbox("What would you like to update: ", ["name", "username", "password"])
 
   if(updates.includes("name")){
-    let newName: string
-    while(true){
-      newName = await askQuestion("Login's new name: (max 64 characters)")
-      if(newName.length > 64){
-        console.log("The max length the login's name can be is 64 characters. Please try again.")
-        continue
-      }
-      break
-    }
-    login.name = newName
-  }else if(updates.includes("username")){
-    let newUsername: string
-    while(true){
-      newUsername = await askQuestion("Login's new username: (max 64 characters)")
-      if(newUsername.length > 64){
-        console.log("The max length the login's username can be is 64 characters. Please try again.")
-        continue
-      }
-      break
-    }
-    login.name = newUsername
-  }else if(updates.includes("password")){
-    let newPassword: string
-    while(true){
-      newPassword = await askQuestion("Login's new password: (max 64 characters)")
-      if(newPassword.length > 64){
-        console.log("The max length the login's username can be is 64 characters. Please try again.")
-        continue
-      }
-      break
-    }
-    login.name = newUsername
-
+    login.name = await getProperty("name")
   }
+
+  if(updates.includes("username")){
+    login.name = await getProperty("username")
+  }
+
+  if(updates.includes("password")){
+    const newPassword = await askForNewPassword()
+    login.password = newPassword
+    login.passwordLength = newPassword.length
+  }
+
+  // Encrypt the new login
+  const newEncryptedLogin = encrypt(login, masterPassword)
+  // Update inputFile
+  encryptedLogins[loginIndex] = newEncryptedLogin
+  // Write inputFile to file
+  fs.writeFileSync(inputFilePath, JSON.stringify(encryptedLogins, null, 2))
 }

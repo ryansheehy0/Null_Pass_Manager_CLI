@@ -16,4 +16,6 @@ export const EncryptedLogin = z.object({
   encryptedPasswordLength: z.string().max(2)
 })
 
+export const EncryptedLogins = EncryptedLogin.array()
+
 export const MasterPassword = z.string().length(128, { message: "Master password must be exactly 128 characters in length. Please try again."})

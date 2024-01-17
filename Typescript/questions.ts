@@ -46,7 +46,7 @@ function suggestFiles(answers, input): string[]{
   }
 }
 
-async function questionTemplate(type: string, question: string, options?: string[]): Promise<string>{
+async function questionTemplate<T>(type: string, question: string, options?: string[]): Promise<T>{
   const {answer} = await inquirer.prompt([{
     type: type,
     name: "answer",
@@ -56,12 +56,12 @@ async function questionTemplate(type: string, question: string, options?: string
     suggestOnly: true,
   }])
 
-  return answer as string
+  return answer as T
 }
 
-export async function askQuestion(question: string): Promise<string> {return await questionTemplate("input", question)}
-export async function askForFile(question: string): Promise<string> {return await questionTemplate("autocomplete", question)}
-export async function askPassword(question: string): Promise<string> {return await questionTemplate("password", question)}
-export async function askOptions(question: string, options: string[]): Promise<string> {return await questionTemplate("list", question, options)}
-export async function askYesOrNo(question: string): Promise<string> {return await questionTemplate("confirm", question)}
-export async function askCheckbox(question: string, options: string[]): Promise<string> {return await questionTemplate("checkbox", question, options)}
+export async function askQuestion(question: string): Promise<string> {return await questionTemplate<string>("input", question)}
+export async function askForFile(question: string): Promise<string> {return await questionTemplate<string>("autocomplete", question)}
+export async function askPassword(question: string): Promise<string> {return await questionTemplate<string>("password", question)}
+export async function askOptions(question: string, options: string[]): Promise<string> {return await questionTemplate<string>("list", question, options)}
+export async function askYesOrNo(question: string): Promise<boolean> {return await questionTemplate<boolean>("confirm", question)}
+export async function askCheckbox(question: string, options: string[]): Promise<string[]> {return await questionTemplate<string[]>("checkbox", question, options)}
