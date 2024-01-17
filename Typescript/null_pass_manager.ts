@@ -1,13 +1,17 @@
 #!/usr/bin/env node
 
-import { z } from 'zod'
+/* TODO:
+  - Print out login with the password shortened to length
+*/
+
 import fs from 'fs'
 import generateRandomPassword from './generateRandomPassword'
-import {askQuestion, askForFile, askPassword, askOptions, askYesOrNo} from './questions'
+import {askQuestion, askForFile, askPassword, askOptions} from './questions'
 import { MasterPassword } from './types'
-import {createNewLogin, getAllLogins, getLoginByName, updateLoginByName, deleteLoginByName} from "./options/index"
+import getLoginByName from './getLoginByName'
+import {createNewLogin, updateLoginByName, deleteLoginByName} from "./options/index"
 
-async function getInputFilePath(){
+async function getInputFilePath(): Promise<string>{
   let inputFilePath = await askForFile("Enter encrypted input file or give a folder location to create a new one: ")
   const inputFileStats = fs.lstatSync(inputFilePath)
   if(inputFileStats.isFile()){
@@ -34,7 +38,7 @@ async function getInputFilePath(){
   return inputFilePath
 }
 
-async function getMasterPassword(){
+async function getMasterPassword(): Promise<string>{
   let masterPassword = await askPassword('Enter master password (128 characters) or type "g" to generate a new one: ')
   if(masterPassword === "g"){
     masterPassword = generateRandomPassword(128, true, true, true, true)
@@ -49,69 +53,46 @@ async function getMasterPassword(){
   return masterPassword
 }
 
-async function getUserOption(){
+async function userOptions(inputFilePath: string, masterPassword: string): Promise<void>{
   const options = [
-    "Get all logins",
-    "Get all login names",
     "Get login by name",
     "Create new login",
     "Update login by name",
     "Delete login by name",
-    "Generate random password",
     "Exit"
   ]
 
-  // Use recursion to continually ask until exit
+  while(true){
+    const option = await askOptions("What would you like to do: ", options)
+    console.log(option)
+
+    switch(option){
+      case "Get login by name":
+        console.log(await getLoginByName(inputFilePath, masterPassword))
+        break
+      case "Create new login":
+        await createNewLogin(inputFilePath, masterPassword)
+        break
+      case "Update login by name":
+        await updateLoginByName(inputFilePath, masterPassword)
+        break
+      case "Delete login by name":
+        await deleteLoginByName(inputFilePath, masterPassword)
+        break
+      case "Exit":
+        console.log("Exit")
+        break
+    }
+  }
 }
 
-async function main(){
+async function main(): Promise<void>{
   // Get input file
   const inputFilePath = await getInputFilePath()
   // Get master password
   const masterPassword = await getMasterPassword()
-  // Ask what the user wants to do
-
-  let keepRunning = true
-  while(keepRunning){
-    const option = await askOptions("What would you like to do: ", options)
-    console.log(option)
-    switch(option){
-      case "Get all logins":
-        await getAllLogins(inputFilePath, inputPassword, false)
-        break
-      case "Get all login names":
-        await getAllLogins(inputFilePath, inputPassword, true)
-        break
-      case "Get login by name":
-        await getLoginByName(inputFilePath, inputPassword)
-        break
-      case "Create new login":
-        await createNewLogin(inputFilePath, inputPassword)
-        break
-      case "Update login by name":
-        await updateLoginByName(inputFilePath, inputPassword)
-        break
-      case "Delete login by name":
-        await deleteLoginByName(inputFilePath, inputPassword)
-        break
-      case "Generate random password":
-        // Ask for length
-        let length
-        while(true){
-          length = parseInt(await askQuestion("Password length: "))
-          if(!Number.isInteger(length)){
-            console.log("Length must be an integer. Please try again.")
-            continue
-          }
-          break
-        }
-        await generateRandomPassword(length, length)
-        break
-      case "Exit":
-        keepRunning = false
-        break
-    }
-  }
+  // Do what the user wants to do
+  await userOptions(inputFilePath, masterPassword)
 }
 
 main()
