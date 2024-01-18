@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { EncryptedLogins, Login } from './types'
 import fs from 'fs'
-import decrypt from './cryptography/decrypt'
+import decrypt from '../cryptography/decrypt'
 import { askOptions } from './questions'
 
 export default async function getLoginByName(inputFilePath: string, masterPassword: string): Promise<{login: z.infer<typeof Login>, loginIndex: number, encryptedLogins: z.infer<typeof EncryptedLogins>}>{

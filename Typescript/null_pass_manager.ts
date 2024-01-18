@@ -9,7 +9,9 @@ import generateRandomPassword from './generateRandomPassword'
 import {askQuestion, askForFile, askPassword, askOptions} from './questions'
 import { MasterPassword } from './types'
 import getLoginByName from './getLoginByName'
-import {createNewLogin, updateLoginByName, deleteLoginByName} from "./options/index"
+import updateLoginByName from './options/updateLoginByName'
+import deleteLoginByName from './options/deleteLoginByName'
+import createNewLogin from './options/createNewLogin'
 
 async function getInputFilePath(): Promise<string>{
   let inputFilePath = await askForFile("Enter encrypted input file or give a folder location to create a new one: ")

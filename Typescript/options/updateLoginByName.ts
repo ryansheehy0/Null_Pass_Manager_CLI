@@ -1,37 +1,22 @@
 import fs from 'fs'
 import getLoginByName from "../getLoginByName"
-import { askCheckbox, askQuestion, askPassword, askYesOrNo } from "../questions"
+import { askCheckbox } from "../questions"
 import askForNewPassword from "../askForNewPassword"
 import encrypt from '../cryptography/encrypt'
+import askForProperty from '../askForProperty'
 
-async function getProperty(property: "name" | "username"): Promise<string>{
-  let newProperty: string
-  const question = `Login's new ${property}: (max 64 characters)`
-
-  while(true){
-    newProperty = await askQuestion(question)
-    if(newProperty.length > 64){
-      console.log("The max length is 64 characters. Please try again.")
-      continue
-    }
-    break
-  }
-
-  return newProperty
-}
-
-export default async function updateLoginByName(inputFilePath: string, masterPassword: string){
+export default async function updateLoginByName(inputFilePath: string, masterPassword: string): Promise<void>{
   const { login, loginIndex, encryptedLogins } = await getLoginByName(inputFilePath, masterPassword)
   console.log(login)
 
   const updates = await askCheckbox("What would you like to update: ", ["name", "username", "password"])
 
   if(updates.includes("name")){
-    login.name = await getProperty("name")
+    login.name = await askForProperty("name")
   }
 
   if(updates.includes("username")){
-    login.name = await getProperty("username")
+    login.name = await askForProperty("username")
   }
 
   if(updates.includes("password")){

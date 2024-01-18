@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { Login, EncryptedLogin, MasterPassword } from '../types'
+import { Login, EncryptedLogin, MasterPassword } from '../utils/types'
 import hexSHA256 from './hexSHA256'
 import simpleEncryption from './simpleEncryption'
 
