@@ -1,13 +1,15 @@
 import fs from 'fs'
-import getLoginByName from "../getLoginByName"
-import { askCheckbox } from "../questions"
-import askForNewPassword from "../askForNewPassword"
+import getLoginByName from "../utils/getLoginByName"
+import { askCheckbox } from "../utils/questions"
+import askForNewPassword from "../utils/askForNewPassword"
 import encrypt from '../cryptography/encrypt'
-import askForProperty from '../askForProperty'
+import askForProperty from '../utils/askForProperty'
+import printLogin from '../utils/printLogin'
 
 export default async function updateLoginByName(inputFilePath: string, masterPassword: string): Promise<void>{
-  const { login, loginIndex, encryptedLogins } = await getLoginByName(inputFilePath, masterPassword)
-  console.log(login)
+  const { login, loginIndex, encryptedLogins } = await getLoginByName(inputFilePath, masterPassword) ?? {}
+  if(login === undefined || loginIndex === undefined || encryptedLogins === undefined) return
+  printLogin(login)
 
   const updates = await askCheckbox("What would you like to update: ", ["name", "username", "password"])
 
@@ -16,7 +18,7 @@ export default async function updateLoginByName(inputFilePath: string, masterPas
   }
 
   if(updates.includes("username")){
-    login.name = await askForProperty("username")
+    login.username = await askForProperty("username")
   }
 
   if(updates.includes("password")){

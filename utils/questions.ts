@@ -1,10 +1,12 @@
 import fs from 'fs'
-import inquirer from 'inquirer'
-import autocomplete from 'inquirer-autocomplete-prompt'
+//import inquirer from 'inquirer'
+const inquirer = require('inquirer')
+//import autocomplete from 'inquirer-autocomplete-prompt'
+const autocomplete = require('inquirer-autocomplete-prompt')
 
 inquirer.registerPrompt('autocomplete', autocomplete)
 
-function suggestFiles(answers, input): string[]{
+function suggestFiles(answers: any, input: any): string[]{
   // This function gets the options for file tab autocompletion
 
   let directory: string     // The directory to be searched

@@ -196,7 +196,8 @@ Some websites have limits on the size of passwords. If the max password length i
 Instead if the password length was stored alongside the password, the padding could be random characters which would prevent passwords from being easily identifiable.
 
 ## Problems
-- Organize code better
-- Typescript
-- Replace requires with imports
-- Handling logins with the same names
+- Handle logins with the same name
+
+## Need to test
+- Passwords with less than 64 length
+- 

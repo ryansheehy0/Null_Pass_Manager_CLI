@@ -3,7 +3,6 @@
 import fs from 'fs'
 import { generateRandomPassword } from './utils/askForNewPassword'
 import {askQuestion, askForFile, askPassword, askOptions} from './utils/questions'
-import { MasterPassword } from './utils/types'
 import getLoginByName from './utils/getLoginByName'
 import printLogin from './utils/printLogin'
 import updateLoginByName from './options/updateLoginByName'
@@ -12,42 +11,62 @@ import createNewLogin from './options/createNewLogin'
 
 async function getInputFilePath(): Promise<string>{
   let inputFilePath = await askForFile("Enter encrypted input file or give a folder location to create a new one: ")
-  const inputFileStats = fs.lstatSync(inputFilePath)
+  let inputFileStats: fs.Stats
+  try{
+    inputFileStats = fs.lstatSync(inputFilePath)
+  }catch(error){
+    console.error()
+    console.error("You must enter an encrypted json file or give a folder location. Please try again.")
+    console.error()
+    process.exit(1)
+  }
   if(inputFileStats.isFile()){
     try{
       // Check if the input file is a json file
       JSON.parse(fs.readFileSync(inputFilePath).toString())
     }catch(error){
-      throw new Error("Input file must be an encrypted json file. Please try again.")
+      console.error()
+      console.error("Input file must be an encrypted json file. Please try again.")
+      console.error()
+      process.exit(1)
     }
   }else if(inputFileStats.isDirectory()){
     const newFileName = await askQuestion("What's your new file name: ")
     try{
       fs.writeFileSync(inputFilePath + newFileName + ".json", "[]")
     }catch(error){
-      throw new Error("Something went wrong creating your new file. Please try again.")
+      console.error()
+      console.error("Something went wrong creating your new file. Please try again.")
+      console.error()
+      process.exit(1)
     }
     inputFilePath = inputFilePath + newFileName + ".json"
-  }else{
-    throw new Error("You must enter an encrypted json file or give a folder location. Please try again.")
   }
 
   return inputFilePath
 }
 
 async function getMasterPassword(): Promise<string>{
-  let masterPassword = await askPassword('Enter master password (128 characters) or type "g" to generate a new one: ')
-  if(masterPassword === "g"){
-    masterPassword = generateRandomPassword(128, true, true, true, true)
-    console.log()
-    console.log(`You new master password is: "${masterPassword}"`)
-    console.log(`	Make sure to securely save this password. Without it, you won't be able to retrieve future login information.`)
-    console.log()
-  }else{
-    MasterPassword.parse(masterPassword)
+  while(true){
+    let masterPassword = await askPassword('Enter master password (128 characters) or type "g" to generate a new one: ')
+    if(masterPassword === "g"){
+      masterPassword = generateRandomPassword(128, true, true, true, false)
+      console.log()
+      console.log(`You new master password is: ${masterPassword}`)
+      console.log(`	Make sure to securely save this password. Without it, you won't be able to retrieve future login information.`)
+      console.log()
+    }else{
+      if(masterPassword.length !== 128){
+        console.log()
+        console.log("Master password must be exactly 128 characters in length. Please try again.")
+        console.log()
+        continue
+      }
+    }
+ 
+    return masterPassword
   }
 
-  return masterPassword
 }
 
 async function userOptions(inputFilePath: string, masterPassword: string): Promise<void>{
@@ -64,7 +83,7 @@ async function userOptions(inputFilePath: string, masterPassword: string): Promi
 
     switch(option){
       case "Get login by name":
-        printLogin((await getLoginByName(inputFilePath, masterPassword)).login)
+        printLogin((await getLoginByName(inputFilePath, masterPassword))?.login)
         break
       case "Create new login":
         await createNewLogin(inputFilePath, masterPassword)
@@ -76,8 +95,7 @@ async function userOptions(inputFilePath: string, masterPassword: string): Promi
         await deleteLoginByName(inputFilePath, masterPassword)
         break
       case "Exit":
-        console.log("Exit")
-        break
+        return
     }
   }
 }

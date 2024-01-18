@@ -40,13 +40,19 @@ async function askForNewGeneratedPassword(): Promise<string>{
     ]
     const selectedOptions = await askCheckbox("What characters do you want in your password: ", newPasswordOptions)
 
-    return generateRandomPassword(
+    const newGeneratedPassword = generateRandomPassword(
       newPasswordLength,
       selectedOptions.includes("Upper Case Characters"),
       selectedOptions.includes("Numbers"),
       selectedOptions.includes("Special Characters"),
       selectedOptions.includes("Spaces")
     )
+
+    console.log()
+    console.log(newGeneratedPassword)
+    console.log()
+
+    return newGeneratedPassword
   }
 }
 

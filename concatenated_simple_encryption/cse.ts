@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import fs from 'fs'
-const {askForFile, askOptions, askPassword} = require("../utils/question")
+import { askForFile, askPassword, askOptions } from '../utils/questions'
 
 async function asyncFunc(){
   const inputFile = await askForFile("Enter your input file: ")

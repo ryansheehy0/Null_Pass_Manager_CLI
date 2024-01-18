@@ -1,20 +1,18 @@
-import { z } from 'zod'
-import { Login } from './types'
-
-export default function printLogin(login?: z.infer<typeof Login>): void{
-  if(!login) return
-
-  const printedLogin = {
-    name: login.name,
-    username: login.username,
-    password: login.password.substring(0, login.passwordLength)
-  }
-
-  console.log()
-  console.log(printedLogin)
-  console.log()
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+function printLogin(login) {
+    if (!login)
+        return;
+    const printedLogin = {
+        name: login.name,
+        username: login.username,
+        password: login.password.substring(0, login.passwordLength)
+    };
+    console.log();
+    console.log(printedLogin);
+    console.log();
 }
-
+exports.default = printLogin;
 /*
 const chalk = require("chalk")
 
@@ -34,4 +32,4 @@ function printObj(logins){
 }
 
 module.exports = printObj
-*/
+*/ 
