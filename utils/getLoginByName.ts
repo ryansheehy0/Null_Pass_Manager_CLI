@@ -21,12 +21,14 @@ export default async function getLoginByName(inputFilePath: string, masterPasswo
     return
   }
 
-  const loginNames = logins.map((login) => login.name.trim())
+  const loginOptions = logins.map((login) => {
+    return {name: login.name.trim(), value: login.uuid}
+  })
 
   while(true){
-    const loginName = await askOptions("Select name of login: ", loginNames)
+    const loginUUID = await askOptions("Select name of login: ", loginOptions)
 
-    const loginIndex = logins.findIndex((login) => login.name.trim() === loginName)
+    const loginIndex = logins.findIndex((login) => login.uuid === loginUUID)
     const login = logins[loginIndex]
 
     if(!login){

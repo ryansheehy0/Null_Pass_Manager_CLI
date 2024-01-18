@@ -1,28 +1,30 @@
 # Null Terminal Password Manager
 A terminal password manager that uses a relatively simple encryption algorithm and stores it in a json file.
 
+## Installation
+1. Clone form github
+1. Run `npm install`
+1. Run `./null_pass_manager.js`
+
 ## Inputs
 - Encrypted json file
-- Input master password which must be 128 random characters
+- Master password which must be 128 random characters
 
 ## Commands
-- Get all logins
-- Get all login names
 - Get login by name
 - Create new login
 - Update login by name
 - Delete login by name
-- Generate random password
 
 ## Login and json file structure
-Each login is an object with 4 fields
+Each login is an object with 5 fields
 ```javascript
 {
   uuid:, // Universally Unique Identifier. Uniquely identifies the login
-  encryptedName:, // Name of the website or account
-  encryptedUsername:,
-  encryptedPassword:,
-  encryptedPasswordLength: // Only 2 characters in length
+  name:, // Name of the website or account
+  username:,
+  password:,
+  passwordLength: // Only 2 characters in length
 }
 ```
 
@@ -194,10 +196,3 @@ By keeping the password as a separate encryption, the information an attacker co
 Some websites have limits on the size of passwords. If the max password length is less than 64 characters, then when the password is stored in the login it has to be padded in front. If this padding is spaces, then it would be easily identifiable.
 
 Instead if the password length was stored alongside the password, the padding could be random characters which would prevent passwords from being easily identifiable.
-
-## Problems
-- Handle logins with the same name
-
-## Need to test
-- Passwords with less than 64 length
-- 

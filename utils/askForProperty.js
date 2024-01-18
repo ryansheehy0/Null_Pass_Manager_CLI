@@ -12,17 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const questions_1 = require("./questions");
 function getProperty(property) {
     return __awaiter(this, void 0, void 0, function* () {
-        let newProperty;
         const question = `Login's new ${property}: (max 64 characters)`;
         while (true) {
-            newProperty = property === "password" ? yield (0, questions_1.askPassword)(question) : yield (0, questions_1.askQuestion)(question);
+            let newProperty = property === "password" ? yield (0, questions_1.askPassword)(question) : yield (0, questions_1.askQuestion)(question);
             if (newProperty.length > 64) {
                 console.log("The max length is 64 characters. Please try again.");
                 continue;
             }
-            break;
+            return newProperty;
         }
-        return newProperty;
     });
 }
 exports.default = getProperty;

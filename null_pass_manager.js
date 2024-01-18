@@ -21,6 +21,7 @@ const printLogin_1 = __importDefault(require("./utils/printLogin"));
 const updateLoginByName_1 = __importDefault(require("./options/updateLoginByName"));
 const deleteLoginByName_1 = __importDefault(require("./options/deleteLoginByName"));
 const createNewLogin_1 = __importDefault(require("./options/createNewLogin"));
+const types_1 = require("./utils/types");
 function getInputFilePath() {
     return __awaiter(this, void 0, void 0, function* () {
         let inputFilePath = yield (0, questions_1.askForFile)("Enter encrypted input file or give a folder location to create a new one: ");
@@ -37,7 +38,8 @@ function getInputFilePath() {
         if (inputFileStats.isFile()) {
             try {
                 // Check if the input file is a json file
-                JSON.parse(fs_1.default.readFileSync(inputFilePath).toString());
+                const encryptedLogins = JSON.parse(fs_1.default.readFileSync(inputFilePath).toString());
+                types_1.EncryptedLogins.parse(encryptedLogins);
             }
             catch (error) {
                 console.error();
@@ -48,6 +50,7 @@ function getInputFilePath() {
         }
         else if (inputFileStats.isDirectory()) {
             const newFileName = yield (0, questions_1.askQuestion)("What's your new file name: ");
+            inputFilePath = inputFilePath.at(-1) === "/" ? inputFilePath : inputFilePath + "/";
             try {
                 fs_1.default.writeFileSync(inputFilePath + newFileName + ".json", "[]");
             }

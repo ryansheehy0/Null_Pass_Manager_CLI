@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { askQuestion, askCheckbox, askYesOrNo, askPassword } from './questions'
+import { askQuestion, askCheckbox, askYesOrNo } from './questions'
 import crypto from 'crypto'
 import askForProperty from './askForProperty'
 
@@ -27,7 +27,7 @@ export function generateRandomPassword(length: number, hasUpperCaseCharacters: b
 async function askForNewGeneratedPassword(): Promise<string>{
   while(true){
     const newPasswordLength = parseInt(await askQuestion("Password length: (max 64 characters)"))
-    if(!z.number().int().lte(64).safeParse(newPasswordLength).success){
+    if(!z.number().int().lte(64).gt(0).safeParse(newPasswordLength).success){
       console.log("The max length is 64 characters. Please try again.")
       continue
     }
@@ -58,8 +58,8 @@ async function askForNewGeneratedPassword(): Promise<string>{
 
 export default async function askForNewPassword(): Promise<string>{
   const generateNewPassword = await askYesOrNo("Do you want to generate a new password: ")
-  let newPassword: string
 
+  let newPassword: string
   if(generateNewPassword){
     newPassword = await askForNewGeneratedPassword()
   }else{

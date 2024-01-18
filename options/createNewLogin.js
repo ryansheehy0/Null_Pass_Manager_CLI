@@ -17,9 +17,11 @@ const crypto_1 = __importDefault(require("crypto"));
 const encrypt_1 = __importDefault(require("../cryptography/encrypt"));
 const askForNewPassword_1 = __importDefault(require("../utils/askForNewPassword"));
 const askForProperty_1 = __importDefault(require("../utils/askForProperty"));
+const types_1 = require("../utils/types");
 function createNewLogin(inputFilePath, masterPassword) {
     return __awaiter(this, void 0, void 0, function* () {
         const encryptedLogins = JSON.parse(fs_1.default.readFileSync(inputFilePath).toString());
+        types_1.EncryptedLogins.parse(encryptedLogins);
         const newLogin = {
             uuid: crypto_1.default.randomUUID(),
             name: yield (0, askForProperty_1.default)("name"),

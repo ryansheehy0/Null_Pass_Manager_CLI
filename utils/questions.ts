@@ -48,7 +48,7 @@ function suggestFiles(answers: any, input: any): string[]{
   }
 }
 
-async function questionTemplate<T>(type: string, question: string, options?: string[]): Promise<T>{
+async function questionTemplate<T>(type: string, question: string, options?: string[] | {name: string, value: string}[]): Promise<T>{
   const {answer} = await inquirer.prompt([{
     type: type,
     name: "answer",
@@ -64,6 +64,6 @@ async function questionTemplate<T>(type: string, question: string, options?: str
 export async function askQuestion(question: string): Promise<string> {return await questionTemplate<string>("input", question)}
 export async function askForFile(question: string): Promise<string> {return await questionTemplate<string>("autocomplete", question)}
 export async function askPassword(question: string): Promise<string> {return await questionTemplate<string>("password", question)}
-export async function askOptions(question: string, options: string[]): Promise<string> {return await questionTemplate<string>("list", question, options)}
+export async function askOptions(question: string, options: string[] | {name: string, value: string}[]): Promise<string> {return await questionTemplate<string>("list", question, options)}
 export async function askYesOrNo(question: string): Promise<boolean> {return await questionTemplate<boolean>("confirm", question)}
 export async function askCheckbox(question: string, options: string[]): Promise<string[]> {return await questionTemplate<string[]>("checkbox", question, options)}

@@ -31,10 +31,12 @@ function getLoginByName(inputFilePath, masterPassword) {
             console.log();
             return;
         }
-        const loginNames = logins.map((login) => login.name.trim());
+        const loginOptions = logins.map((login) => {
+            return { name: login.name.trim(), value: login.uuid };
+        });
         while (true) {
-            const loginName = yield (0, questions_1.askOptions)("Select name of login: ", loginNames);
-            const loginIndex = logins.findIndex((login) => login.name.trim() === loginName);
+            const loginUUID = yield (0, questions_1.askOptions)("Select name of login: ", loginOptions);
+            const loginIndex = logins.findIndex((login) => login.uuid === loginUUID);
             const login = logins[loginIndex];
             if (!login) {
                 console.log("Not an option. Please try again.");

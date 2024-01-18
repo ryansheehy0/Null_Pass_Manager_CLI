@@ -8,6 +8,7 @@ import { EncryptedLogins, Login } from '../utils/types'
 
 export default async function createNewLogin(inputFilePath: string, masterPassword: string): Promise<void>{
   const encryptedLogins = JSON.parse(fs.readFileSync(inputFilePath).toString()) as z.infer<typeof EncryptedLogins>
+  EncryptedLogins.parse(encryptedLogins)
 
   const newLogin: z.infer<typeof Login> = {
     uuid: crypto.randomUUID(),

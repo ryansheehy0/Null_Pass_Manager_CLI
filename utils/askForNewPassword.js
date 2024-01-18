@@ -43,7 +43,7 @@ function askForNewGeneratedPassword() {
     return __awaiter(this, void 0, void 0, function* () {
         while (true) {
             const newPasswordLength = parseInt(yield (0, questions_1.askQuestion)("Password length: (max 64 characters)"));
-            if (!zod_1.z.number().int().lte(64).safeParse(newPasswordLength).success) {
+            if (!zod_1.z.number().int().lte(64).gt(0).safeParse(newPasswordLength).success) {
                 console.log("The max length is 64 characters. Please try again.");
                 continue;
             }
