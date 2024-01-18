@@ -1,3 +1,19 @@
+import { z } from 'zod'
+import { Login } from './types'
+
+export default function printLogin(login: z.infer<typeof Login>): void{
+  const printedLogin = {
+    name: login.name,
+    username: login.username,
+    password: login.password.substring(0, login.passwordLength)
+  }
+
+  console.log()
+  console.log(printedLogin)
+  console.log()
+}
+
+/*
 const chalk = require("chalk")
 
 function printObj(logins){
@@ -16,3 +32,4 @@ function printObj(logins){
 }
 
 module.exports = printObj
+*/

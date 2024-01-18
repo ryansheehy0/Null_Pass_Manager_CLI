@@ -3,7 +3,7 @@ import { askQuestion, askCheckbox, askYesOrNo, askPassword } from './questions'
 import crypto from 'crypto'
 import askForProperty from './askForProperty'
 
-function generateRandomPassword(length: number, hasUpperCaseCharacters: boolean, hasNumbers: boolean, hasSpecialCharacters: boolean, hasSpaces: boolean): string{
+export function generateRandomPassword(length: number, hasUpperCaseCharacters: boolean, hasNumbers: boolean, hasSpecialCharacters: boolean, hasSpaces: boolean): string{
   const lowerCaseCharacters = "abcdefghijklmnopqrstuvwxyz"
   const upperCaseCharacters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
   const numbers = "0123456789"

@@ -1,14 +1,11 @@
 #!/usr/bin/env node
 
-/* TODO:
-  - Print out login with the password shortened to length
-*/
-
 import fs from 'fs'
-import generateRandomPassword from './generateRandomPassword'
-import {askQuestion, askForFile, askPassword, askOptions} from './questions'
-import { MasterPassword } from './types'
-import getLoginByName from './getLoginByName'
+import { generateRandomPassword } from './utils/askForNewPassword'
+import {askQuestion, askForFile, askPassword, askOptions} from './utils/questions'
+import { MasterPassword } from './utils/types'
+import getLoginByName from './utils/getLoginByName'
+import printLogin from './utils/printLogin'
 import updateLoginByName from './options/updateLoginByName'
 import deleteLoginByName from './options/deleteLoginByName'
 import createNewLogin from './options/createNewLogin'
@@ -24,9 +21,7 @@ async function getInputFilePath(): Promise<string>{
       throw new Error("Input file must be an encrypted json file. Please try again.")
     }
   }else if(inputFileStats.isDirectory()){
-    // Ask for name for new encrypted file
     const newFileName = await askQuestion("What's your new file name: ")
-    // Create new json file with empty array
     try{
       fs.writeFileSync(inputFilePath + newFileName + ".json", "[]")
     }catch(error){
@@ -66,11 +61,10 @@ async function userOptions(inputFilePath: string, masterPassword: string): Promi
 
   while(true){
     const option = await askOptions("What would you like to do: ", options)
-    console.log(option)
 
     switch(option){
       case "Get login by name":
-        console.log(await getLoginByName(inputFilePath, masterPassword))
+        printLogin((await getLoginByName(inputFilePath, masterPassword)).login)
         break
       case "Create new login":
         await createNewLogin(inputFilePath, masterPassword)

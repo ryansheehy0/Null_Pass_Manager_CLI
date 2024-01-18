@@ -7,7 +7,6 @@ import askForProperty from '../utils/askForProperty'
 import { EncryptedLogins, Login } from '../utils/types'
 
 export default async function createNewLogin(inputFilePath: string, masterPassword: string): Promise<void>{
-  // Get the object input file
   const encryptedLogins = JSON.parse(fs.readFileSync(inputFilePath).toString()) as z.infer<typeof EncryptedLogins>
 
   const newLogin: z.infer<typeof Login> = {
