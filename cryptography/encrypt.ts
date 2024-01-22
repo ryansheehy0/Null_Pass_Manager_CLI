@@ -17,8 +17,8 @@ export default function encrypt(login: z.infer<typeof Login>, masterPassword: z.
   const passwordHash = hexSHA256(login.uuid + "password" + password2ndHalf)
   const encryptedPassword = simpleEncryption(simpleEncryption(login.password, passwordHash, "encrypt"), password2ndHalf, "encrypt")
   // Encrypt password length
-  const passwordLengthHash = hexSHA256(login.uuid + "passwordLength" + password2ndHalf)
-  let encryptedPasswordLength = simpleEncryption(simpleEncryption(login.passwordLength.toString(), passwordLengthHash, "encrypt"), password2ndHalf, "encrypt")
+  const passwordLengthHash = hexSHA256(login.uuid + "passwordLength" + password1stHalf)
+  let encryptedPasswordLength = simpleEncryption(simpleEncryption(login.passwordLength.toString(), passwordLengthHash, "encrypt"), password1stHalf, "encrypt")
   encryptedPasswordLength = encryptedPasswordLength.slice(-2)
 
   return {

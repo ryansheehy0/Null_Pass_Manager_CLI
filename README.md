@@ -32,27 +32,33 @@ Logins are stored in an array inside the json file
 
 ## Encryption algorithm
 
-1. Split the input password in half. Each getting 64 characters. `password1stHalf` and `password2ndHalf`
+1. Split the master password in half. Each getting 64 characters. `password1stHalf` and `password2ndHalf`
 1. For each login
 
 ```javascript
 // name
 const nameHash = hexSHA256(uuid + "name" + password1stHalf)
 const encryptedName = simpleEncryption(simpleEncryption(name, nameHash, "encrypt"), password1stHalf, "encrypt")
-  // or
+  // decrypted
 const name = simpleEncryption(simpleEncryption(encryptedName, password1stHalf, "decrypt"), nameHash, "decrypt")
 
 // username
 const usernameHash = hexSHA256(uuid + "username" + password1stHalf)
 const encryptedUsername = simpleEncryption(simpleEncryption(username, usernameHash, "encrypt"), password1stHalf, "encrypt")
-  // or
+  // decrypted
 const username = simpleEncryption(simpleEncryption(encryptedUsername, password1stHalf, "decrypt"), usernameHash, "decrypt")
 
 // password
 const passwordHash = hexSHA256(uuid + "password" + password2ndHalf)
 const encryptedPassword = simpleEncryption(simpleEncryption(password, passwordHash, "encrypt"), password2ndHalf, "encrypt")
-  // or
+  // decrypted
 const password = simpleEncryption(simpleEncryption(encryptedPassword, password2ndHalf, "decrypt"), passwordHash, "decrypt")
+
+// password length
+const passwordLengthHash = hexSHA256(uuid + "passwordLength" + password1stHalf)
+const encryptedPasswordLength = simpleEncryption(simpleEncryption(passwordLength, passwordLengthHash, "encrypt"), password1stHalf, "encrypt")
+  // decrypted. The last 2 characters contain the length
+const passwordLength = simpleEncryption(simpleEncryption(encryptedPasswordLength, password1stHalf, "decrypt"), passwordLengthHash, "decrypt")
 ```
 
 Why the inputs into the hash
@@ -181,8 +187,8 @@ function simpleEncryption(input, password, encryptOrDecrypt){
 | 52 + 32 = 84        | 72 + 32 = 104       | 73 + 32 = 105       | 83 + 32 = 115       |
 | T                   | h                   | i                   | s                   |
 
-## Why split the input password in half
-The reason the input password is split in half is to shift brute force attacks onto the websites instead of onto the encrypted file. It does this by encrypting the names and usernames separately from the passwords.
+## Why split the master password in half
+The reason the master password is split in half is to shift brute force attacks onto the websites instead of onto the encrypted file. It does this by encrypting the names and usernames separately from the passwords.
 
 The first half of the password encrypts the name and username, which are assumed to be plain text. When decrypted they can be easily verified because they are typically recognizable names or words.
 
