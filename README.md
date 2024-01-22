@@ -1,5 +1,5 @@
-# Null Terminal Password Manager
-A terminal password manager that uses a relatively simple encryption algorithm and stores it in a json file.
+# Null Pass Manager CLI
+A terminal password manager that uses a relatively simple encryption algorithm and securely stores it in a json file.
 
 ## Installation
 1. Clone form github
