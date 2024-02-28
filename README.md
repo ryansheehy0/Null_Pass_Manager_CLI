@@ -1,6 +1,9 @@
 # Null Pass Manager CLI
 A terminal password manager that uses a relatively simple encryption algorithm and securely stores it in a json file.
 
+## License
+Null Pass Manager is licensed under GPLv3. See the COPYING file for details.
+
 ## Installation
 1. Clone form github
 1. Run `npm install`
