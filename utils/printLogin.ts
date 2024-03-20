@@ -28,6 +28,8 @@ export default function printLogin(login?: z.infer<typeof Login>): void{
   }
 
   console.log()
-  console.log(printedLogin)
+  console.log(`\x1b[0mname: \x1b[32m${printedLogin.name}`)
+  console.log(`\x1b[0musername: \x1b[32m${printedLogin.username}`)
+  console.log(`\x1b[0mpassword: \x1b[32m${printedLogin.password}`)
   console.log()
 }
